@@ -9,9 +9,7 @@ const baseFile = path.join(directory, 'en.json');
 const baseData = JSON.parse(fs.readFileSync(baseFile, 'utf-8'));
 
 // Helper function to check if a value is a single word
-const isSingleWord = (value: string): boolean => {
-  return value.trim().split(/\s+/).length === 1;
-};
+const isSingleWord = (value: string): boolean => value.trim().split(/\s+/).length === 1;
 
 // Iterate over all files in the directory
 fs.readdirSync(directory).forEach((filename) => {
@@ -26,9 +24,8 @@ fs.readdirSync(directory).forEach((filename) => {
     let differentKeys = 0;
 
     for (const [key, value] of Object.entries(baseData)) {
-      if (key.startsWith('__')) { // Skip metadata keys
-        continue;
-      }
+      if (key.startsWith('__')) continue; // Skip metadata keys
+
       totalKeys += 1;
 
       // Check if the key exists in the translation file
@@ -36,14 +33,11 @@ fs.readdirSync(directory).forEach((filename) => {
         const translationValue = translationData[key];
 
         // If the value is the same as the base value and it's a single word, skip it
-        if (typeof translationValue === 'string' && translationValue === value && isSingleWord(value)) {
-          continue;
-        }
+        if (typeof translationValue === 'string' && translationValue === value && isSingleWord(value)) continue;
 
         // If the value is the same as the base value, count it as different
-        if (translationValue === value) {
-          differentKeys += 1;
-        }
+        if (translationValue === value) differentKeys += 1;
+
       } else {
         // If the key is missing, count it as different
         differentKeys += 1;
