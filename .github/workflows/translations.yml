@@ -141,7 +141,6 @@ jobs:
           webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
           # Empty lines in content are treated as empty lines
           content: |
-            
             🗓  Weekly Summary of Translation Progress
             
             📊  ${{ steps.calculate_percentage.outputs.percentage }}
