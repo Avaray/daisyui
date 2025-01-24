@@ -96,6 +96,10 @@ jobs:
               
             https://github.com/saadeghi/daisyui/tree/v5/packages/docs/src/translation
           
+      - name: Debug GitHub Token
+        if: steps.count_entries.outputs.detected_changes == 'true'
+        run: |
+          echo "GITHUB_TOKEN is set: ${GITHUB_TOKEN != '' }"
 
       - name: Create Pull Request
         if: steps.count_entries.outputs.detected_changes == 'true'
