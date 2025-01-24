@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // Path to the directory containing the JSON files
-const directory = './';
+// This will work with Bun, not with Deno and Node
+const directory = __dirname;
 
 // Load the base English file
 const baseFile = path.join(directory, 'en.json');
