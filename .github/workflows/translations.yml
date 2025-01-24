@@ -90,6 +90,15 @@ jobs:
           content: |
             👋  Help us improve! New lines await your translation
 
+      - name: Create Pull Request
+        if: steps.count_entries.outputs.notify_discord == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          # Probably you will need to change GITHUB_TOKEN or set different user for this step
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Calculated percentage of translations"
+          title: "Calculated percentage of translations"
+
   # Weekly summary of translations in Discord (This job should work fine)
   weekly-summary:
     needs: check-date
