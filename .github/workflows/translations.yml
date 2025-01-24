@@ -91,8 +91,10 @@ jobs:
           # use ${{ steps.count_entries.outputs.new_entries }} to get the number of new entries
           content: |
             👋  Help us improve! New content awaits your translation
-          
-            📜  Files are located here: https://github.com/saadeghi/daisyui/tree/v5/packages/docs/src/translation
+
+            📜  Files are located here: 
+              
+            https://github.com/saadeghi/daisyui/tree/v5/packages/docs/src/translation
           
 
       - name: Create Pull Request
