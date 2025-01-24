@@ -28,6 +28,21 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  # Quit entire workflow if current date is above 1st march 2025
+  check-date:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check date
+        id: check_date
+        run: |
+          CURRENT_DATE=$(date +%Y-%m-%d)
+          echo "current_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
+          if [[ $CURRENT_DATE > "2024-03-01" ]]; then
+            echo "Date is above 1st march 2025. Quitting workflow."
+            exit 0
+          fi
+            
   detect-new-translations:
     # Prevent this job from running on schedule
     if: github.event_name != 'schedule'
