@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Print branch name
         run: echo ${{ github.ref }}
-        
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -105,12 +105,12 @@ jobs:
       - name: Print current directory
         run: pwd
       
-      - name: Change to script directory
-        run: cd ./src/docs/src/translation
+      # - name: Change to script directory
+      #   run: cd packages/docs/src/translation
       
       - name: Run script to calculate percentage of translations
         id: calculate_percentage
-        run: bun run percentage.ts -s >> $GITHUB_OUTPUT
+        run: bun run packages/docs/src/translation/percentage.ts -s >> $GITHUB_OUTPUT
           
       - name: Send message to Discord
         # Check if percentage string is not empty
