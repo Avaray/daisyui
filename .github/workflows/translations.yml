@@ -98,8 +98,13 @@ jobs:
           
       - name: Debug GitHub Token
         if: steps.count_entries.outputs.detected_changes == 'true'
+        # Check if GITHUB_TOKEN is set
         run: |
-          echo "GITHUB_TOKEN is set: ${GITHUB_TOKEN != '' }"
+          if [ -n "$GITHUB_TOKEN" ]; then
+            echo "GITHUB_TOKEN is set"
+          else
+            echo "GITHUB_TOKEN is not set"
+          fi
 
       - name: Create Pull Request
         if: steps.count_entries.outputs.detected_changes == 'true'
