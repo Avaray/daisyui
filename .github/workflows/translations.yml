@@ -1,7 +1,8 @@
 # This workflow do the following:
-# 1. Count new translation entries in branch v5
-# 2. Notify "translations" channel on Discord if there are new translation entries
-# 3. Notify "translations" channel on Discord weekly about percentage of translations
+# 1. Check if current date is below 1st March 2025 (if you are planning to release V5 in different date, change this in check-date job)
+# 2. Count new translation entries in branch v5 and update "__status" in files
+# 3. Notify "translations" channel on Discord if there are new translation entries
+# 4. Notify "translations" channel on Discord weekly about percentage of translations
 
 # To integrate this workflow with Discord, you need to create a webhook for the "translations" channel.
 # You can find the webhook URL in the channel settings.
@@ -19,7 +20,8 @@ on:
       # When new translation entries are added to base file
       - "packages/docs/src/translation/en.json"
   schedule:
-    # Run weekly at 7pm UTC on Monday. I think it should be UTC. Need to verify that.
+    # Run weekly at 7pm on Monday. I think it should be UTC. Need to verify that
+    # Change this time as needed. I just selected most optimal time for different time zones
     - cron: '0 19 * * 1'
   # This lets you manually trigger the workflow
   workflow_dispatch:
