@@ -40,7 +40,7 @@ jobs:
           echo "current_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
           if [[ $CURRENT_DATE > "2024-03-01" ]]; then
             echo "Date is above 1st march 2025. Quitting workflow."
-            exit 0
+            exit 1
           fi
             
   detect-new-translations:
