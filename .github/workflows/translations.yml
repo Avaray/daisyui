@@ -74,14 +74,14 @@ jobs:
 
           if [ "$NEW_ENTRIES" -gt 0 ]; then
             echo "New translation entries detected. Proceeding with Discord notification."
-            echo "notify_discord=true" >> $GITHUB_OUTPUT
+            echo "detected_changes=true" >> $GITHUB_OUTPUT
           else
             echo "No new translation entries detected. Skipping Discord notification."
-            echo "notify_discord=false" >> $GITHUB_OUTPUT
+            echo "detected_changes=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Discord Webhook Action
-        if: steps.count_entries.outputs.notify_discord == 'true'
+        if: steps.count_entries.outputs.detected_changes == 'true'
         uses: tsickert/discord-webhook@v6.0.0
         with:
           webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
@@ -90,10 +90,13 @@ jobs:
           # You need to use ID to mention, e.g. <@102044211276169216>
           # use ${{ steps.count_entries.outputs.new_entries }} to get the number of new entries
           content: |
-            👋  Help us improve! New lines await your translation
+            👋  Help us improve! New content awaits your translation
+          
+            📜  Files are located here: https://github.com/saadeghi/daisyui/tree/v5/packages/docs/src/translation
+          
 
       - name: Create Pull Request
-        if: steps.count_entries.outputs.notify_discord == 'true'
+        if: steps.count_entries.outputs.detected_changes == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           # Probably you will need to change GITHUB_TOKEN or set different user for this step
