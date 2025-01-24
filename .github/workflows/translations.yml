@@ -113,6 +113,9 @@ jobs:
         run: |
           OUTPUT=$(bun run packages/docs/src/translation/percentage.ts -s)
           echo "percentage=$OUTPUT" >> $GITHUB_OUTPUT
+
+      - name: Print percentage
+        run: echo ${{ steps.calculate_percentage.outputs.percentage }}
           
       - name: Send message to Discord
         # Check if percentage string is not empty
