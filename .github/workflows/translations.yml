@@ -82,7 +82,7 @@ jobs:
 
       - name: Update "__status" in files
         if: steps.count_entries.outputs.detected_changes == 'true'
-        run: bun run packages/docs/src/translation/status.ts
+        run: bun run packages/docs/src/translation/percentage.ts
 
       - name: Create Pull Request
         if: steps.count_entries.outputs.detected_changes == 'true'
