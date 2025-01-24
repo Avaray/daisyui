@@ -105,6 +105,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Calculated percentage of translations"
           title: "Calculated percentage of translations"
+          body: "Calculated percentage of translations"
 
   # Weekly summary of translations in Discord (This job should work fine)
   weekly-summary:
