@@ -124,5 +124,5 @@ jobs:
         with:
           webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
           content: |
-            "Weekly Summary of Translation Progress: 
-            ${{ steps.calculate_percentage.outputs.percentage }}"
+            Weekly Summary of Translation Progress:
+            ${{ steps.calculate_percentage.outputs.percentage }}
