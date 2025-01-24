@@ -73,8 +73,11 @@ try {
   });
 
   if (isSummaryMode) {
+    // Sort the summary entries alphabetically by country code
+    const sortedSummary = Object.entries(summary).sort(([langA], [langB]) => langA.localeCompare(langB));
+
     // Print the summary in the desired format
-    const summaryString = Object.entries(summary)
+    const summaryString = sortedSummary
       .map(([lang, percent]) => `${lang} ${percent}`)
       .join(', ');
     console.log(summaryString);
