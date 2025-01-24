@@ -29,15 +29,18 @@ on:
 
 jobs:
   detect-new-translations:
+    # Prevent this job from running on schedule
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
-      - name: Print branch name
+      - name: Print branch name (For debugging)
         run: echo ${{ github.ref }}
 
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          # Remember to set proper branch here
+          ref: translations
           fetch-depth: 2
 
       - name: Count new translation entries
