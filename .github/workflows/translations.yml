@@ -102,11 +102,8 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Print current directory
+      - name: Print current directory for debugging purposes
         run: pwd
-      
-      # - name: Change to script directory
-      #   run: cd packages/docs/src/translation
       
       - name: Run script to calculate percentage of translations
         id: calculate_percentage
@@ -124,6 +121,6 @@ jobs:
         with:
           webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
           content: |
-            🗓 Weekly Summary of Translation Progress
+            🗓  Weekly Summary of Translation Progress
             
-            📊 ${{ steps.calculate_percentage.outputs.percentage }}
+            📊  ${{ steps.calculate_percentage.outputs.percentage }}
