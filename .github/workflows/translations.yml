@@ -86,8 +86,9 @@ jobs:
           # Read documentation about message formatting if you want to mention server roles or users
           # https://discord.com/developers/docs/reference#message-formatting
           # You need to use ID to mention, e.g. <@102044211276169216>
+          # use ${{ steps.count_entries.outputs.new_entries }} to get the number of new entries
           content: |
-            "Found ${{ steps.count_entries.outputs.new_entries }} new translation entries"
+            👋  Help us improve! New lines await your translation
 
   # Weekly summary of translations in Discord (This job should work fine)
   weekly-summary:
