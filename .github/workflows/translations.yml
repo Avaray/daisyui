@@ -107,8 +107,6 @@ jobs:
       
       - name: Run script to calculate percentage of translations
         id: calculate_percentage
-        # This will print string that will look like this: 
-        # AR 88%, BN 92%, DE 92%, ES 85%, FA 85%, FR 85%, ...
         run: |
           OUTPUT=$(bun run packages/docs/src/translation/percentage.ts -s)
           echo "percentage=$OUTPUT" >> $GITHUB_OUTPUT
@@ -116,8 +114,18 @@ jobs:
       - name: Print percentage
         run: echo ${{ steps.calculate_percentage.outputs.percentage }}
           
+      - name: Determine most needed translations
+        id: most_needed
+        run: |
+          # Extract the percentages and sort them to find the lowest
+          PERCENTAGE_STRING="${{ steps.calculate_percentage.outputs.percentage }}"
+          MOST_NEEDED=$(echo "$PERCENTAGE_STRING" | tr ',' '\n' | awk '{print $1, $2}' | sort -k2,2n | head -n 3 | tr '\n' ', ' | sed 's/, $//')
+          echo "most_needed=$MOST_NEEDED" >> $GITHUB_OUTPUT
+
+      - name: Print most needed translations
+        run: echo ${{ steps.most_needed.outputs.most_needed }}
+
       - name: Send message to Discord
-        # Check if percentage string is not empty
         if: '[ -n "${{ steps.calculate_percentage.outputs.percentage }}" ]'
         uses: tsickert/discord-webhook@v6.0.0
         with:
@@ -126,3 +134,5 @@ jobs:
             🗓  Weekly Summary of Translation Progress
             
             📊  ${{ steps.calculate_percentage.outputs.percentage }}
+
+            🔥  Most needed translations: ${{ steps.most_needed.outputs.most_needed }}
