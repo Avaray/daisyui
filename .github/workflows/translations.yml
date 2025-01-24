@@ -76,34 +76,33 @@ jobs:
           # You need to use ID to mention, e.g. <@102044211276169216>
           content: "No new translation entries detected"
 
-  # Weekly summary of translations in Discord
+  # Weekly summary of translations in Discord (This job should work fine)
   weekly-summary:
-    # Only run on schedule or from manual trigger
+    # Only run on schedule or from manual trigger (remove second condition if you want)
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
+          # Remember to set proper branch here
           ref: translations
           fetch-depth: 1
 
-      - name: Print tree
-        run: tree
-
-      - name: List files
-        run: ls
-
+      # Following steps are just for debugging (remove them if you want)
       - name: Print branch name
         run: echo ${{ github.ref }}
+      - name: Print current directory
+        run: pwd
+      - name: Print tree
+        run: tree
+      - name: List files
+        run: ls
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
-      - name: Print current directory for debugging purposes
-        run: pwd
       
       - name: Run script to calculate percentage of translations
         id: calculate_percentage
@@ -114,7 +113,7 @@ jobs:
       - name: Print percentage
         run: echo ${{ steps.calculate_percentage.outputs.percentage }}
           
-      - name: Determine most needed translation
+      - name: Determine one most needed translation
         id: most_needed
         run: |
           # Extract the percentages and find the one with the lowest percentage
@@ -130,6 +129,7 @@ jobs:
         uses: tsickert/discord-webhook@v6.0.0
         with:
           webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
+          # Empty lines in content are treated as empty lines
           content: |
             🗓  Weekly Summary of Translation Progress
             
