@@ -32,6 +32,9 @@ jobs:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
+      - name: Print branch name
+        run: echo ${{ github.ref }}
+        
       - name: Checkout code
         uses: actions/checkout@v4
         with:
