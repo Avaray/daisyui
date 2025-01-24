@@ -32,20 +32,25 @@ jobs:
   # Quit entire workflow if current date is above 1st march 2025
   check-date:
     runs-on: ubuntu-latest
+    outputs:
+      should_continue: ${{ steps.check_date.outputs.should_continue }}
     steps:
       - name: Check date
         id: check_date
         run: |
           CURRENT_DATE=$(date +%Y-%m-%d)
           echo "current_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
-          if [[ $CURRENT_DATE > "2024-03-01" ]]; then
-            echo "Date is above 1st march 2025. Quitting workflow."
-            exit 1
+          if [[ $CURRENT_DATE > "2025-03-01" ]]; then
+            echo "Date is above 1st March 2025. Quitting workflow."
+            echo "should_continue=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_continue=true" >> $GITHUB_OUTPUT
           fi
             
   detect-new-translations:
-    # Prevent this job from running on schedule
-    if: github.event_name != 'schedule'
+    # Run this job only if date is below 1st march 2025 and it's not scheduled
+    needs: check-date
+    if: needs.check-date.outputs.should_continue == 'true' && github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Print branch name (For debugging)
@@ -88,8 +93,9 @@ jobs:
 
   # Weekly summary of translations in Discord (This job should work fine)
   weekly-summary:
-    # Only run on schedule or from manual trigger (remove second condition if you want)
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: check-date
+    # Run this job only if date is below 1st march 2025, it's not scheduled and it's not a workflow dispatch
+    if: needs.check-date.outputs.should_continue == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
