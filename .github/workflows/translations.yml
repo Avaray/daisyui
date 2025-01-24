@@ -17,7 +17,7 @@ on:
       - translations
     paths:
       # When new translation entries are added to base file
-      - "src/docs/src/translation/en.json"
+      - "packages/docs/src/translation/en.json"
   schedule:
     # Run weekly at 7pm UTC on Monday. I think it should be UTC. Need to verify that.
     - cron: '0 19 * * 1'
@@ -65,7 +65,7 @@ jobs:
         id: count_entries
         run: |
           # Compare previous and current JSON, count only new keys
-          NEW_ENTRIES=$(git diff HEAD^ HEAD -- src/docs/src/translation/en.json | grep -E '^\+[[:space:]]*"' | grep -v '^\+{' | wc -l)
+          NEW_ENTRIES=$(git diff HEAD^ HEAD -- packages/docs/src/translation/en.json | grep -E '^\+[[:space:]]*"' | grep -v '^\+{' | wc -l)
 
           echo "New translation entries: $NEW_ENTRIES"
           echo "new_entries=$NEW_ENTRIES" >> $GITHUB_OUTPUT
