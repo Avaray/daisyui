@@ -110,7 +110,9 @@ jobs:
       
       - name: Run script to calculate percentage of translations
         id: calculate_percentage
-        run: bun run packages/docs/src/translation/percentage.ts -s >> $GITHUB_OUTPUT
+        run: |
+          OUTPUT=$(bun run packages/docs/src/translation/percentage.ts -s)
+          echo "percentage=$OUTPUT" >> $GITHUB_OUTPUT
           
       - name: Send message to Discord
         # Check if percentage string is not empty
