@@ -1,0 +1,118 @@
+# This workflow do the following:
+# 1. Count new translation entries in branch v5
+# 2. Notify "translations" channel on Discord if there are new translation entries
+# 3. Notify "translations" channel on Discord weekly about percentage of translations
+
+# To integrate this workflow with Discord, you need to create a webhook for the "translations" channel.
+# You can find the webhook URL in the channel settings.
+# Then add the webhook URL as "TRANSLATIONS_WEBHOOK_URL" secret in your repository settings. That's it.
+
+# Change this name if you want
+name: Calculcate percentage of translations
+
+on:
+  push:
+    branches:
+      # Only run on v5 branch
+      - translations
+    paths:
+      # When new translation entries are added to base file
+      - "src/docs/src/translation/en.json"
+  schedule:
+    # Run weekly at 7pm UTC on Monday
+    # I think it should be UTC. Need to verify that.
+    # For debugging purposes I will run it every 3 minutes
+    - cron: '0 */3 * * *'
+    # - cron: '0 19 * * 1'
+  # This lets you manually trigger the workflow
+  workflow_dispatch:
+
+jobs:
+  detect-new-translations:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Count new translation entries
+        id: count_entries
+        run: |
+          # Compare previous and current JSON, count only new keys
+          NEW_ENTRIES=$(git diff HEAD^ HEAD -- src/docs/src/translation/en.json | grep -E '^\+[[:space:]]*"' | grep -v '^\+{' | wc -l)
+
+          echo "New translation entries: $NEW_ENTRIES"
+          echo "new_entries=$NEW_ENTRIES" >> $GITHUB_OUTPUT
+
+          if [ "$NEW_ENTRIES" -gt 0 ]; then
+            echo "New translation entries detected. Proceeding with Discord notification."
+            echo "notify_discord=true" >> $GITHUB_OUTPUT
+          else
+            echo "No new translation entries detected. Skipping Discord notification."
+            echo "notify_discord=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Discord Webhook Action
+        if: steps.count_entries.outputs.notify_discord == 'true'
+        uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
+          content: "Found ${{ steps.count_entries.outputs.new_entries }} new translation entries <@!Avaray> <@&ROLE_ID>"
+
+      # This step is just for debugging
+      # Will be removed later
+      - name: Discord Webhook Action
+        if: steps.count_entries.outputs.notify_discord == 'false'
+        uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
+          # Read documentation about message formatting if you want to mention server roles or users
+          # https://discord.com/developers/docs/reference#message-formatting
+          # You need to use ID to mention, e.g. <@102044211276169216>
+          content: "No new translation entries detected"
+
+  # Weekly summary of translations in Discord
+  weekly-summary:
+    # Only run on schedule or from manual trigger
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: translations
+          fetch-depth: 1
+
+      - name: Print tree
+        run: tree
+
+      - name: List files
+        run: ls
+
+      - name: Print branch name
+        run: echo ${{ github.ref }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Print current directory
+        run: pwd
+      
+      - name: Change to script directory
+        run: cd src/docs/src/translation
+      
+      - name: Run script to calculate percentage of translations
+        id: calculate_percentage
+        run: bun run percentage.ts -s >> $GITHUB_OUTPUT
+          
+      - name: Send message to Discord
+        # Check if percentage string is not empty
+        if: '[ -n "${{ steps.calculate_percentage.outputs.percentage }}" ]'
+        uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
+          content: "Weekly summary: ${{ steps.calculate_percentage.outputs.percentage }}"
