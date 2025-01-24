@@ -65,19 +65,11 @@ jobs:
         uses: tsickert/discord-webhook@v6.0.0
         with:
           webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
-          content: "Found ${{ steps.count_entries.outputs.new_entries }} new translation entries <@!Avaray> <@&ROLE_ID>"
-
-      # This step is just for debugging
-      # Will be removed later
-      - name: Discord Webhook Action
-        if: steps.count_entries.outputs.notify_discord == 'false'
-        uses: tsickert/discord-webhook@v6.0.0
-        with:
-          webhook-url: ${{ secrets.TRANSLATIONS_WEBHOOK_URL }}
           # Read documentation about message formatting if you want to mention server roles or users
           # https://discord.com/developers/docs/reference#message-formatting
           # You need to use ID to mention, e.g. <@102044211276169216>
-          content: "No new translation entries detected"
+          content: |
+            "Found ${{ steps.count_entries.outputs.new_entries }} new translation entries"
 
   # Weekly summary of translations in Discord (This job should work fine)
   weekly-summary:
