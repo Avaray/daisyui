@@ -19,11 +19,8 @@ on:
       # When new translation entries are added to base file
       - "src/docs/src/translation/en.json"
   schedule:
-    # Run weekly at 7pm UTC on Monday
-    # I think it should be UTC. Need to verify that.
-    # For debugging purposes I will run it every 3 minutes
-    - cron: '0 */3 * * *'
-    # - cron: '0 19 * * 1'
+    # Run weekly at 7pm UTC on Monday. I think it should be UTC. Need to verify that.
+    - cron: '0 19 * * 1'
   # This lets you manually trigger the workflow
   workflow_dispatch:
 
@@ -40,7 +37,8 @@ jobs:
         run: |
           CURRENT_DATE=$(date +%Y-%m-%d)
           echo "current_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
-          if [[ $CURRENT_DATE > "2024-03-01" ]]; then
+          # Change this date as needed
+          if [[ $CURRENT_DATE > "2025-03-01" ]]; then
             echo "Date is above 1st March 2025. Quitting workflow."
             echo "should_continue=false" >> $GITHUB_OUTPUT
           else
