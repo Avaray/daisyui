@@ -103,7 +103,7 @@ jobs:
         run: pwd
       
       - name: Change to script directory
-        run: cd src/docs/src/translation
+        run: cd ./src/docs/src/translation
       
       - name: Run script to calculate percentage of translations
         id: calculate_percentage
