@@ -107,6 +107,8 @@ jobs:
       
       - name: Run script to calculate percentage of translations
         id: calculate_percentage
+        # This will print string that will look like this: 
+        # AR 88%, BN 92%, DE 92%, ES 85%, FA 85%, FR 85%, ...
         run: |
           OUTPUT=$(bun run packages/docs/src/translation/percentage.ts -s)
           echo "percentage=$OUTPUT" >> $GITHUB_OUTPUT
