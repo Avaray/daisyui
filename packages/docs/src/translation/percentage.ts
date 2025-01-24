@@ -8,10 +8,18 @@ const directory = __dirname;
 // Helper function to check if a value is a single word
 const isSingleWord = (value: string): boolean => value.trim().split(/\s+/).length === 1;
 
+// Check if the -s flag is provided (summary)
+// Summary prints the summary that looks like this:
+// AR: 88%, BN: 92%, DE: 92%, ES: 85%, FA: 85% ...
+const isSummaryMode = process.argv.includes('-s');
+
 try {
   // Load the base English file
   const baseFile = path.join(directory, 'en.json');
   const baseData = JSON.parse(fs.readFileSync(baseFile, 'utf-8'));
+
+  // Object to store summary data
+  const summary: { [key: string]: string } = {};
 
   // Iterate over all files in the directory
   fs.readdirSync(directory).forEach((filename) => {
@@ -48,19 +56,32 @@ try {
 
       // Calculate the percentage of keys that are different
       const percentageDifferent = totalKeys > 0 ? (differentKeys / totalKeys) * 100 : 0;
+      const percentageTranslated = 100 - Math.floor(percentageDifferent);
 
-      // Update the __status field in the translation file
-      translationData['__status'] = `${100 - Math.floor(percentageDifferent)}%`;
+      // Store the summary data
+      const languageCode = filename.split('.')[0].toUpperCase();
+      summary[languageCode] = `${percentageTranslated}%`;
 
-      // Save the updated translation file with LF line endings and an empty line at the end
-      const updatedContent = JSON.stringify(translationData, null, 2) + '\n';
-      fs.writeFileSync(filePath, updatedContent, { encoding: 'utf-8' });
+      // If not in summary mode, update the __status field in the translation file
+      if (!isSummaryMode) {
+        translationData['__status'] = `${percentageTranslated}%`;
 
-      console.log(`${filename.split('.')[0].toUpperCase()}: ${translationData['__status']}`);
+        // Save the updated translation file with LF line endings and an empty line at the end
+        const updatedContent = JSON.stringify(translationData, null, 2) + '\n';
+        fs.writeFileSync(filePath, updatedContent, { encoding: 'utf-8' });
+      }
     }
   });
 
-  console.log('All files have been updated.');
+  if (isSummaryMode) {
+    // Print the summary in the desired format
+    const summaryString = Object.entries(summary)
+      .map(([lang, percent]) => `${lang}: ${percent}`)
+      .join(', ');
+    console.log(summaryString);
+  } else {
+    console.log('All files have been updated.');
+  }
 } catch (error) {
   console.error('An error occurred:', error);
   // Exit with a non-zero status code to indicate an error
