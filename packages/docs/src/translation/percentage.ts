@@ -10,7 +10,7 @@ const isSingleWord = (value: string): boolean => value.trim().split(/\s+/).lengt
 
 // Check if the -s flag is provided (summary)
 // Summary prints the summary that looks like this:
-// AR: 88%, BN: 92%, DE: 92%, ES: 85%, FA: 85% ...
+// AR 88%, BN 92%, DE 92%, ES 85%, FA 85%, FR 85%, ...
 const isSummaryMode = process.argv.includes('-s');
 
 try {
@@ -30,8 +30,7 @@ try {
       const translationData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
       // Calculate the number of keys that are different from the base file
-      let totalKeys = 0;
-      let differentKeys = 0;
+      let totalKeys = 0, differentKeys = 0;
 
       for (const [key, value] of Object.entries(baseData)) {
         if (key.startsWith('__')) continue; // Skip metadata keys
@@ -76,7 +75,7 @@ try {
   if (isSummaryMode) {
     // Print the summary in the desired format
     const summaryString = Object.entries(summary)
-      .map(([lang, percent]) => `${lang}: ${percent}`)
+      .map(([lang, percent]) => `${lang} ${percent}`)
       .join(', ');
     console.log(summaryString);
   } else {
