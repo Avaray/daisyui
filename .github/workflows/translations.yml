@@ -80,6 +80,11 @@ jobs:
             echo "detected_changes=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: Update "__status" in files
         if: steps.count_entries.outputs.detected_changes == 'true'
         run: bun run packages/docs/src/translation/percentage.ts
