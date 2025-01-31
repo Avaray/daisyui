@@ -58,6 +58,57 @@
 
     return similarProducts
   }
+
+  function getLinksIcon(link) {
+    switch (link) {
+      case "license":
+        return `
+          <svg class="inline-block size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+              <path d="M7 20l10 0"></path>
+              <path d="M6 6l6 -1l6 1"></path>
+              <path d="M12 3l0 17"></path>
+              <path d="M9 12l-3 -6l-3 6a3 3 0 0 0 6 0"></path>
+              <path d="M21 12l-3 -6l-3 6a3 3 0 0 0 6 0"></path>
+            </g>
+          </svg>
+        `
+      case "screenshot":
+        return `
+          <svg class="inline-block size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="M21 21L16.65 16.65"></path>
+              <path d="M11 8L11 14"></path>
+              <path d="M8 11L14 11"></path>
+            </g>
+          </svg>
+        `
+      case "preview":
+        return `
+          <svg class="inline-block size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+              <path d="M10 7.75a.75.75 0 0 1 1.142-.638l3.664 2.249a.75.75 0 0 1 0 1.278l-3.664 2.25a.75.75 0 0 1-1.142-.64z"></path>
+              <path d="M12 17v4"></path>
+              <path d="M8 21h8"></path>
+              <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+            </g>
+          </svg>
+        `
+      default:
+        return ""
+    }
+  }
+
+  let screenshotDialog = $state()
+  let licenseDialog = $state()
+  let screenshotUrl = $state("")
+  let licenseContent = $state("")
+  const openModal = async (url) => {
+    const response = await fetch(url)
+    licenseContent = await response.text()
+    licenseDialog.showModal()
+  }
 </script>
 
 <SEO
@@ -65,13 +116,12 @@
   desc={data.product.attributes.description}
 />
 
-<div class="mx-4">
-  <a
-    class="inline-flex items-center gap-2 text-base-content opacity-50 hover:opacity-100"
-    href="/store/"
-    data-sveltekit-preload-data
-  >
-    <svg class="size-4 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+<div>
+  <a class="btn btn-ghost group" href="/store/" data-sveltekit-preload-data>
+    <svg
+      class="size-4 group-hover:-translate-x-0.5 transition-transform inline-block"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
       ><g fill="currentColor"
         ><line
           x1="17"
@@ -201,74 +251,54 @@
           style={`grid-template-columns: repeat(${Object.keys(data.product.links).length}, minmax(0, 1fr));`}
         >
           {#each Object.entries(data.product.links) as [link, value]}
-            <a
-              target="_blank"
-              aria-label={link}
-              href={value}
-              rel="noopener noreferrer"
-              class="flex flex-col gap-2 items-center p-6 text-center hover:bg-base-200 capitalize *:opacity-50 hover:*:opacity-100"
-            >
-              {#if link === "license"}
-                <svg
-                  class="inline-block size-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  ><g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                    ><path d="M7 20l10 0"></path><path d="M6 6l6 -1l6 1"></path><path d="M12 3l0 17"
-                    ></path><path d="M9 12l-3 -6l-3 6a3 3 0 0 0 6 0"></path><path
-                      d="M21 12l-3 -6l-3 6a3 3 0 0 0 6 0"
-                    ></path></g
-                  ></svg
-                >
-              {/if}
-              {#if link === "screenshot"}
-                <svg
-                  class="inline-block size-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                    ><circle cx="11" cy="11" r="8"></circle><path d="M21 21L16.65 16.65"
-                    ></path><path d="M11 8L11 14"></path><path d="M8 11L14 11"></path></g
-                  >
-                </svg>
-              {/if}
-              {#if link === "preview"}
-                <svg
-                  class="inline-block size-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                    ><path
-                      d="M10 7.75a.75.75 0 0 1 1.142-.638l3.664 2.249a.75.75 0 0 1 0 1.278l-3.664 2.25a.75.75 0 0 1-1.142-.64z"
-                    ></path><path d="M12 17v4"></path><path d="M8 21h8"></path><rect
-                      x="2"
-                      y="3"
-                      width="20"
-                      height="14"
-                      rx="2"
-                    ></rect></g
-                  >
-                </svg>
-              {/if}
-              <span>{link}</span>
-            </a>
+            {#if link === "license"}
+              <button
+                class="flex flex-col gap-2 items-center p-6 text-center hover:bg-base-200 capitalize *:opacity-50 hover:*:opacity-100 cursor-pointer"
+                onclick={() => openModal(value)}
+              >
+                {@html getLinksIcon(link)}
+                <span>{link}</span>
+              </button>
+              <dialog class="modal max-md:modal-bottom" bind:this={licenseDialog}>
+                <div class="modal-box max-h-[90vh] max-w-[50rem] w-full lg:p-20">
+                  <h3 class="text-lg font-bold">{data.product.attributes.name} License</h3>
+                  <pre class="py-4 whitespace-pre-wrap">{licenseContent}</pre>
+                </div>
+                <form method="dialog" class="modal-backdrop">
+                  <button>close</button>
+                </form>
+              </dialog>
+            {:else if link === "screenshot"}
+              <button
+                class="flex flex-col gap-2 items-center p-6 text-center hover:bg-base-200 capitalize *:opacity-50 hover:*:opacity-100 cursor-pointer"
+                onclick={() => {
+                  screenshotDialog.showModal()
+                  screenshotUrl = value
+                }}
+              >
+                {@html getLinksIcon(link)}
+                <span>{link}</span>
+              </button>
+              <dialog class="modal max-md:modal-bottom" bind:this={screenshotDialog}>
+                <div class="modal-box max-h-[90vh] max-w-[90vw] w-full p-0">
+                  <img src={screenshotUrl} alt="Screenshot" class="w-full h-full object-cover" />
+                </div>
+                <form method="dialog" class="modal-backdrop">
+                  <button>close</button>
+                </form>
+              </dialog>
+            {:else}
+              <a
+                target="_blank"
+                aria-label={link}
+                href={value}
+                rel="noopener noreferrer"
+                class="flex flex-col gap-2 items-center p-6 text-center hover:bg-base-200 capitalize *:opacity-50 hover:*:opacity-100"
+              >
+                {@html getLinksIcon(link)}
+                <span>{link}</span>
+              </a>
+            {/if}
           {/each}
         </div>
       </div>
@@ -396,6 +426,102 @@
         </div>
       {/if}
     </div>
+  </div>
+  <div class="my-40">
+    {#if data.product.packages}
+      <div class="overflow-x-auto border border-base-300 rounded-box whitespace-nowrap">
+        <table class="table table-xs sm:table-sm lg:table-md table-zebra">
+          <!-- Table head -->
+          <thead>
+            <tr>
+              {#each data.product.packages[0] as header, headerIndex}
+                <th class:text-center={headerIndex !== 0}>{header}</th>
+              {/each}
+            </tr>
+          </thead>
+          <!-- Table body -->
+          <tbody>
+            {#each data.product.packages.slice(1) as row}
+              <tr>
+                {#each row as cell, cellIndex}
+                  <td class:text-center={cellIndex !== 0}>
+                    {#if typeof cell === "boolean"}
+                      {#if cell}
+                        <svg
+                          aria-label="Yes"
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="size-5 inline-block text-success"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="3"
+                            d="M5 12l5 5L20 7"
+                          />
+                        </svg>
+                      {:else}
+                        <svg
+                          aria-label="No"
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="size-5 inline-block text-error"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="3"
+                            d="M18 6L6 18M6 6l12 12"
+                          />
+                        </svg>
+                      {/if}
+                    {:else}
+                      {cell}
+                    {/if}
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="my-20 flex justify-center">
+        <a
+          href={rednerBuyNowUrl(
+            data.product.attributes.buy_now_url,
+            data.product.ref,
+            data.product.params,
+          )}
+          class="btn lg:btn-lg xl:btn-xl btn-primary group shrink-0 rounded-full xl:px-10"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Buy {data.product.attributes.name}
+          <span class="flex gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="hidden size-6 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 group-hover:rtl:-translate-x-1 md:inline-block"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+              >
+              </path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    {/if}
   </div>
   <div class="my-40">
     {#each data.product.more_images as image}

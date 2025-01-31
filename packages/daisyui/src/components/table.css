@@ -20,7 +20,7 @@
   }
 
   :where(tfoot) {
-    border-top: var(--border) solid color-mix(in oklch, var(--color-base-content) 5%, transparent);
+    border-top: var(--border) solid color-mix(in oklch, var(--color-base-content) 5%, #0000);
   }
 
   :where(.table-pin-rows thead tr) {
@@ -35,9 +35,8 @@
     @apply bg-base-100 sticky right-0 left-0;
   }
 
-  :where(thead tr, tbody tr:not(:last-child), tbody tr:first-child:last-child) {
-    border-bottom: var(--border) solid
-      color-mix(in oklch, var(--color-base-content) 5%, transparent);
+  :where(thead tr, tbody tr:not(:last-child)) {
+    border-bottom: var(--border) solid color-mix(in oklch, var(--color-base-content) 5%, #0000);
   }
 }
 

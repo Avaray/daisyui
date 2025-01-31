@@ -96,7 +96,7 @@ desc: How to use daisyUI from a CDN?
   <div class="tab-content border-none bg-neutral text-neutral-content">
     <div class="grid *:[grid-area:1/1]">
       
-      <div class="overflow-x-auto pt-16 pb-8 px-6">
+      <div class="overflow-x-auto pt-16 pb-2 mb-6 px-6">
           
         {#if $combinedUrl}
         

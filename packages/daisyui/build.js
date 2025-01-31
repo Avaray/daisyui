@@ -27,7 +27,7 @@ async function generateFiles() {
         states: ["hover"],
       }),
     !isDev && generateThemeFiles({ srcDir: "src/themes", distDir: "theme" }),
-    !isDev && generateRawStyles({ srcDir: "../src/base", distDir: "../base" }),
+    !isDev && generateRawStyles({ srcDir: "../src/base", distDir: "../base", layer: "base" }),
     !isDev &&
       generateRawStyles({
         srcDir: "../src/components",
@@ -37,19 +37,22 @@ async function generateFiles() {
           "calendar",
           "countdown",
           "loading",
+          "filter",
           "mask",
           "mockup",
           "skeleton",
           "swap",
           "validator",
         ],
+        layer: "utilities",
       }),
     !isDev &&
       generateRawStyles({
         srcDir: "../src/utilities",
         distDir: "../utilities",
         responsive: true,
-        exclude: ["typography"],
+        exclude: ["typography", "glass", "join"],
+        layer: "utilities",
       }),
     generatePlugins({ type: "base", srcDir: "src/themes", distDir: "theme" }),
     generatePlugins({ type: "base", srcDir: "src/base", distDir: "base" }),
